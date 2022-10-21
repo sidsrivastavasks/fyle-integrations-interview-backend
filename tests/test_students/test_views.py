@@ -81,6 +81,10 @@ def test_submit_assignment_without_teacher_student_1(api_client, student_1):
 
 @pytest.mark.django_db()
 def test_grade_assignment_student_1(api_client, student_1):
+    """
+    Try to Set Grade Being a Student
+    """
+
     response = api_client.patch(
         reverse('students-assignments'),
         data=json.dumps({
@@ -100,6 +104,10 @@ def test_grade_assignment_student_1(api_client, student_1):
 
 @pytest.mark.django_db()
 def test_set_state_assignment_student_1(api_client, student_1):
+    """
+    Trying to Set the Grade from Student account
+    """
+
     response = api_client.patch(
         reverse('students-assignments'),
         data=json.dumps({

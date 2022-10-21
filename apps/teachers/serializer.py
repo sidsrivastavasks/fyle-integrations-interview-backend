@@ -15,6 +15,7 @@ class TeacherAssignmentSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
 
+        #Updating the state from SUBMITTED to GRADED.
         if 'grade' in attrs:
             attrs['state'] = 'GRADED'
         

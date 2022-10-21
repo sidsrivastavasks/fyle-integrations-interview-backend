@@ -77,6 +77,10 @@ def test_grade_draft_state_teacher_1(api_client, teacher_1):
 
 @pytest.mark.django_db()
 def test_wrong_assignment_id(api_client, teacher_1):
+    """
+    Test with an Assignment which is not present in the Database
+    """
+
     grade = 'A'
 
     response = api_client.patch(
