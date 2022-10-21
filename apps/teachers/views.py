@@ -54,7 +54,7 @@ class TeacherAssignmentsView(generics.ListCreateAPIView):
             if (request.data.get('grade') and not any(request.data.get('grade') in i for i in GRADE_CHOICES)):
                 print([request.data['grade']])
                 return Response(
-                    data={'grade': [request.data['grade']]},
+                    data={'grade': ['is not a valid choice.']},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             if assignment.state == ASSIGNMENT_STATE_CHOICES[2][1]:
