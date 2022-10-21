@@ -1,4 +1,5 @@
 import json
+from re import A
 
 from django.urls import reverse
 import pytest
@@ -76,6 +77,44 @@ def test_submit_assignment_without_teacher_student_1(api_client, student_1):
     error = response.json()
 
     assert error['non_field_errors'] == ['Teacher ID has to be sent to set state to SUBMITTED']
+
+
+@pytest.mark.django_db()
+def test_grade_assignment_student_1(api_client, student_1):
+    response = api_client.patch(
+        reverse('students-assignments'),
+        data=json.dumps({
+            'id': 6,
+            'grade': 'A',
+            "teacher_id": 2
+        }),
+        HTTP_X_Principal=student_1,
+        content_type='application/json'
+    )
+
+    assert response.status_code == 400
+    error = response.json()
+
+    assert error['non_field_errors'] == ['Student cannot set grade for assignment']
+
+
+@pytest.mark.django_db()
+def test_set_state_assignment_student_1(api_client, student_1):
+    response = api_client.patch(
+        reverse('students-assignments'),
+        data=json.dumps({
+            'id': 6,
+            'state': "GRADED",
+            "teacher_id": 2
+        }),
+        HTTP_X_Principal=student_1,
+        content_type='application/json'
+    )
+
+    assert response.status_code == 400
+    error = response.json()
+
+    assert error['non_field_errors'] == ['Student cannot set state to GRADED']
 
 
 @pytest.mark.django_db()
