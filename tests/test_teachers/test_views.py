@@ -75,6 +75,25 @@ def test_grade_draft_state_teacher_1(api_client, teacher_1):
 
     assert error['non_field_errors'] == ['SUBMITTED assignments can only be graded']
 
+@pytest.mark.django_db()
+def test_wrong_assignment_id(api_client, teacher_1):
+    grade = 'A'
+
+    response = api_client.patch(
+        reverse('teachers-assignments'),
+        data=json.dumps({
+            'id': 1000,
+            'grade': grade
+        }),
+        HTTP_X_Principal=teacher_1,
+        content_type='application/json'
+    )
+
+    assert response.status_code == 400
+    error = response.json()
+
+    assert error['non_field_errors'] == ['Assignment does not exist/permission denied']
+
 
 @pytest.mark.django_db()
 def test_grade_graded_state_teacher_1(api_client, teacher_1):
