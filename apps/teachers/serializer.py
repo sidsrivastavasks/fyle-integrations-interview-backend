@@ -15,10 +15,7 @@ class TeacherAssignmentSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
 
-        if (not any(attrs['grade'] in i for i in GRADE_CHOICES)):
-            raise serializers.ValidationError(attr['grade'])
-        
-        if 'grade' in attrs and 'teacher' in attrs:
+        if 'grade' in attrs:
             attrs['state'] = 'GRADED'
         
         if self.partial:

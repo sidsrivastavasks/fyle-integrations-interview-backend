@@ -40,18 +40,23 @@ class TeacherAssignmentsView(generics.ListCreateAPIView):
             assignment = Assignment.objects.get(id = request.data['id'])
             request.data['teacher_id'] = Teacher.objects.get(user=request.user).id
 
-            # if request.data['teacher_id'] != assignment.teacher:
-            #     return Response(
-            #         data={"non_field_errors": ["Teacher cannot grade for other teacher''s assignment"]},
-            #         status=status.HTTP_400_BAD_REQUEST
-            #     )
+            if request.data['teacher_id'] != assignment.teacher.id:
+                return Response(
+                    data={'non_field_errors': ['Teacher cannot grade for other teacher''s assignment']},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
             if assignment.state == ASSIGNMENT_STATE_CHOICES[0][1]:
                 return Response(
                     data={"non_field_errors": ["SUBMITTED assignments can only be graded"]},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-
+            if (request.data.get('grade') and not any(request.data.get('grade') in i for i in GRADE_CHOICES)):
+                print([request.data['grade']])
+                return Response(
+                    data={'grade': [request.data['grade']]},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             if assignment.state == ASSIGNMENT_STATE_CHOICES[2][1]:
                 return Response(
                     data={"non_field_errors": ["GRADED assignments cannot be graded again"]},
@@ -60,7 +65,7 @@ class TeacherAssignmentsView(generics.ListCreateAPIView):
 
         except Assignment.DoesNotExist:
             return Response(
-                data={"non_field_errors": "Assignment does not exist/permission denied"},
+                data={'non_field_errors': ['Assignment does not exist/permission denied']},
                 status=status.HTTP_400_BAD_REQUEST
             )
 

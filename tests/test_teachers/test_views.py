@@ -82,7 +82,7 @@ def test_wrong_assignment_id(api_client, teacher_1):
     response = api_client.patch(
         reverse('teachers-assignments'),
         data=json.dumps({
-            'id': 1000,
+            'id': 190,
             'grade': grade
         }),
         HTTP_X_Principal=teacher_1,
